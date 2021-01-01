@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  Tip2ViewController.swift
 //  Prework
 //
 //  Created by Saul Fernandez on 12/29/20.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class Tip2ViewController: UIViewController {
     @IBOutlet weak var billAmountTextField: UITextField!
     @IBOutlet weak var tipPercentageLabel: UILabel!
     @IBOutlet weak var tipControl: UISegmentedControl!
@@ -15,17 +15,13 @@ class ViewController: UIViewController {
     @IBOutlet weak var peepStepper: UIStepper!
     @IBOutlet weak var perPerson: UILabel!
     @IBOutlet weak var numPeep: UILabel!
-    @IBOutlet weak var prevBill: UILabel!
-    @IBOutlet weak var prevTotal: UILabel!
     var tipPercentages = [0.10,0.15,0.2]
-    let defaults = UserDefaults.standard
-    var total = 0.00
-    var bill = 0.00
     
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         print("view will appear")
+        let defaults = UserDefaults.standard
         let percentNum1 = defaults.object(forKey: "percent1") as? Int
         let percentNum2 = defaults.object(forKey: "percent2") as? Int
         let percentNum3 = defaults.object(forKey: "percent3") as? Int
@@ -36,11 +32,6 @@ class ViewController: UIViewController {
         tipPercentages[1] = Double(percentNum2 ?? 18) / 100
         tipPercentages[2] = Double(percentNum3 ?? 20) / 100
         billAmountTextField.becomeFirstResponder()
-        let last1 = defaults.object(forKey: "pBill") as? Double ?? 0.00
-        let last2 = defaults.object(forKey: "pTotal") as? Double ?? 0.00
-        prevBill.text = String(format: "$%.2f", last1)
-        prevTotal.text = String(format: "$%.2f", last2)
-        print(last2)
         // This is a good place to retrieve the default tip percentage from UserDefaults
         // and use it to update the tip amount
     }
@@ -65,24 +56,21 @@ class ViewController: UIViewController {
     }
 
     @IBAction func calculateTip(_ sender: Any) {
-        prevBill.text = String(format: "$%.2f", defaults.object(forKey: "pBill") as? Double ?? 0.00)
-        prevTotal.text = String(format: "$%.2f", defaults.object(forKey: "pTotal") as? Double ?? 0.00)
-        bill = Double(billAmountTextField.text!) ?? 0
+        let total = Double(billAmountTextField.text!) ?? 0
         let peeps = peepStepper.value
-        let tip = bill * tipPercentages[tipControl.selectedSegmentIndex]
-        total  = bill + tip
-        let amountPerPerson = total / peeps
+        
+        let bill  = total / (tipPercentages[tipControl.selectedSegmentIndex] + 1)
+        
+        let tip = total - bill
+        
+        let amountPerPerson = bill / peeps
+        
         tipPercentageLabel.text = String(format: "$%.2f", tip)
-        totalLabel.text = String(format: "$%.2f", total)
+        totalLabel.text = String(format: "$%.2f", bill)
         perPerson.text = String(format: "$%.2f", amountPerPerson)
         numPeep.text = String(format: "#%.0f", peeps)
-        
-        
-    }
-    @IBAction func updatePrev(_ sender: Any) {
-        defaults.set(bill, forKey: "pBill")
-        defaults.set(total, forKey: "pTotal")
-        defaults.synchronize()
-    }
-}
 
+    }
+    
+    
+}
