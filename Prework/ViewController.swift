@@ -17,10 +17,13 @@ class ViewController: UIViewController {
     @IBOutlet weak var numPeep: UILabel!
     @IBOutlet weak var prevBill: UILabel!
     @IBOutlet weak var prevTotal: UILabel!
-    var tipPercentages = [0.10,0.15,0.2]
+    var tipPercentages = [0.15,0.18,0.2]
     let defaults = UserDefaults.standard
     var total = 0.00
     var bill = 0.00
+    let moneySign = Locale.current.currencySymbol
+
+
     
 
     override func viewWillAppear(_ animated: Bool) {
@@ -38,9 +41,12 @@ class ViewController: UIViewController {
         billAmountTextField.becomeFirstResponder()
         let last1 = defaults.object(forKey: "pBill") as? Double ?? 0.00
         let last2 = defaults.object(forKey: "pTotal") as? Double ?? 0.00
-        prevBill.text = String(format: "$%.2f", last1)
-        prevTotal.text = String(format: "$%.2f", last2)
-        print(last2)
+        billAmountTextField.placeholder = moneySign
+        tipPercentageLabel.text = moneySign! + "0.00"
+        totalLabel.text = moneySign! + "0.00"
+        perPerson.text = moneySign! + "0.00"
+        prevBill.text = moneySign! + String(format: "%.2f", last1)
+        prevTotal.text = moneySign! + String(format: "%.2f", last2)
         // This is a good place to retrieve the default tip percentage from UserDefaults
         // and use it to update the tip amount
     }
@@ -65,16 +71,16 @@ class ViewController: UIViewController {
     }
 
     @IBAction func calculateTip(_ sender: Any) {
-        prevBill.text = String(format: "$%.2f", defaults.object(forKey: "pBill") as? Double ?? 0.00)
-        prevTotal.text = String(format: "$%.2f", defaults.object(forKey: "pTotal") as? Double ?? 0.00)
+        prevBill.text = moneySign! + String(format: "%.2f", defaults.object(forKey: "pBill") as? Double ?? 0.00)
+        prevTotal.text = moneySign! + String(format: "%.2f", defaults.object(forKey: "pTotal") as? Double ?? 0.00)
         bill = Double(billAmountTextField.text!) ?? 0
         let peeps = peepStepper.value
         let tip = bill * tipPercentages[tipControl.selectedSegmentIndex]
         total  = bill + tip
         let amountPerPerson = total / peeps
-        tipPercentageLabel.text = String(format: "$%.2f", tip)
-        totalLabel.text = String(format: "$%.2f", total)
-        perPerson.text = String(format: "$%.2f", amountPerPerson)
+        tipPercentageLabel.text = moneySign! + String(format: "%.2f", tip)
+        totalLabel.text = moneySign! + String(format: "%.2f", total)
+        perPerson.text = moneySign! + String(format: "%.2f", amountPerPerson)
         numPeep.text = String(format: "#%.0f", peeps)
         
         

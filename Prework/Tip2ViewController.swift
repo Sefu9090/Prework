@@ -15,7 +15,8 @@ class Tip2ViewController: UIViewController {
     @IBOutlet weak var peepStepper: UIStepper!
     @IBOutlet weak var perPerson: UILabel!
     @IBOutlet weak var numPeep: UILabel!
-    var tipPercentages = [0.10,0.15,0.2]
+    var tipPercentages = [0.15,0.18,0.2]
+    let moneySign = Locale.current.currencySymbol
     
 
     override func viewWillAppear(_ animated: Bool) {
@@ -32,6 +33,10 @@ class Tip2ViewController: UIViewController {
         tipPercentages[1] = Double(percentNum2 ?? 18) / 100
         tipPercentages[2] = Double(percentNum3 ?? 20) / 100
         billAmountTextField.becomeFirstResponder()
+        billAmountTextField.placeholder = moneySign
+        tipPercentageLabel.text = moneySign! + "0.00"
+        totalLabel.text = moneySign! + "0.00"
+        perPerson.text = moneySign! + "0.00"
         // This is a good place to retrieve the default tip percentage from UserDefaults
         // and use it to update the tip amount
     }
